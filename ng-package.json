@@ -1,0 +1,18 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/ngx-lightbox-plus",
+  "lib": {
+    "entryFile": "src/public-api.ts"
+  },
+  "assets": [
+    {
+      "glob": "lightbox.css",
+      "input": "src/lib/",
+      "output": "./"
+    }
+  ],
+  "allowedNonPeerDependencies": [
+    "file-saver",
+    "ngx-filesaver"
+  ]
+}
