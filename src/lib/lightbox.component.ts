@@ -3,12 +3,15 @@ import { FileSaverService } from 'ngx-filesaver';
 import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Inject,
   Input,
   OnDestroy,
   OnInit,
+  Pipe,
+  PipeTransform,
   Renderer2,
   SecurityContext,
   ViewChild,
@@ -42,15 +45,15 @@ import {
         </ng-container>
         <ng-container *ngIf="options.isVideo">
           <ng-container *ngIf="album[currentImageIndex].src.includes('youtube')" >
-          <iframe   #image    [hidden]="ui.showReloader"  id="image"  class="lb-image animation fadeIn"    width="600" height="400" [src]="_sanitizer.bypassSecurityTrustResourceUrl(this.album[this.currentImageIndex].src)" 
+          <iframe   #image    [hidden]="ui.showReloader"  id="image"  class="lb-image animation fadeIn"    width="600" height="400" [src]="album[this.currentImageIndex].src | safeUrl" 
            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </ng-container>
-        <ng-contianer *ngIf="!album[currentImageIndex].src.includes('youtube')">
+        <ng-container *ngIf="!album[currentImageIndex].src.includes('youtube')">
         <video controls width="600" height="400"  id="image"       class="lb-image animation fadeIn" 
             #image    [hidden]="ui.showReloader"      >
           <source [src]="album[currentImageIndex].src" type="video/mp4"        >
          </video>
-         </ng-contianer>
+         </ng-container>
 
         </ng-container>
         <div class="lb-loader" [hidden]="!ui.showReloader" (click)="close($event)">
@@ -89,6 +92,7 @@ import {
     '[class]': 'ui.classList'
   },
   styleUrls: ['./lightbox.css'],
+  // changeDetection:ChangeDetectionStrategy.OnPush
   // encapsulation: ViewEncapsulation.None
 
 })
@@ -119,7 +123,7 @@ export class LightboxComponent implements OnInit, AfterViewInit, OnDestroy, OnIn
     public _lightboxElem: ElementRef,
     private _lightboxWindowRef: LightboxWindowRef,
     private _fileSaverService: FileSaverService,
-    private _sanitizer: DomSanitizer,
+    public _sanitizer: DomSanitizer,
     @Inject(DOCUMENT) private _documentRef
   ) {
     // initialize data
@@ -171,6 +175,13 @@ export class LightboxComponent implements OnInit, AfterViewInit, OnDestroy, OnIn
     this.album.forEach(album => {
       if (album.caption) {
         album.caption = this._sanitizer.sanitize(SecurityContext.HTML, album.caption);
+        // if(album.src.includes('youtube')){
+        //   console.log(album.src,'before')
+
+        // album.src = this._sanitizer.bypassSecurityTrustResourceUrl(album.src);
+        // console.log(album.src,'after')
+
+        // }
       }
     });
   }
@@ -770,3 +781,4 @@ export class LightboxComponent implements OnInit, AfterViewInit, OnDestroy, OnIn
     }
   }
 }
+

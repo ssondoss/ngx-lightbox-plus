@@ -1,6 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 
 import { Injectable} from '@angular/core';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 export interface IEvent {
   id: number;
@@ -8,10 +9,11 @@ export interface IEvent {
 }
 
 export interface IAlbum {
-  src: string;
+  src: any;
   caption?: string;
   thumb: string;
   downloadUrl?: string;
+  prevSrc?:string
 }
 
 export const LIGHTBOX_EVENT = {
